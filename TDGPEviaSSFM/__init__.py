@@ -5,7 +5,7 @@ A python package to solve the time-dependent Gross–Pitaevskii equation numeric
 """
 
 __version__ = "0.1.0"
-__author__ = "Mohamed Abdelwahab"
-__credits__ = ""
 
+
+import interpolation
 
