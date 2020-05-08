@@ -14,8 +14,9 @@ def prod(iterable):
 
 def newton_interpol(x_array, y_array):
     # Check that x_array and y_array are the same size and store the size of x_array
-    if (n:=x_array.size) != y_array.size:
+    if (x_array.size) != y_array.size:
         raise ValueError("x-array and y-array are not the same size")
+    n = x_arra.size
 
     A = np.zeros((n,n))
 

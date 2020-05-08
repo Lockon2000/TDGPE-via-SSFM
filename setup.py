@@ -44,9 +44,9 @@ setuptools.setup(
     author_email="m.abdelwahab2@gmail.com",
     license="MIT License",
     packages=setuptools.find_packages(),
-    install_requires=["scipy", "numpy"],
+    install_requires=["scipy", "numpy", "matplotlib"],
     classifiers=[
-        "Development Status :: 1 - Planning",
+        "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
