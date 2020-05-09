@@ -9,7 +9,7 @@ from .tools import computeTotalProbability
 from .tools import computeTotalEnergy
 
 
-def plotState(x, k, psi_x, psi_k, V, kappa, m, furtherInfo={}):
+def plotState(x, k, psi_x, psi_k, V, kappa, m, title=None, furtherInfo={}):
     from .configs import dt
     from .configs import N_t
 
@@ -37,10 +37,14 @@ def plotState(x, k, psi_x, psi_k, V, kappa, m, furtherInfo={}):
 
     # Injection of Plot Information #
 
-    fig.suptitle("$\\Psi(x,t)$ and $\\tilde{\\Psi}(k,t)$", fontsize=16)
+    if title:
+        fig.suptitle(title, fontsize=16)
+    else:
+        fig.suptitle("$\\Psi(x,t)$ and $\\tilde{\\Psi}(k,t)$", fontsize=16)
+
     fig.text(
         0.01,
-        0.95,
+        0.925,
         f"$\\kappa = {kappa:.2e}$\n"
         f"Total Probabilty = {totalProb_psi_x:.3f}\n"
         f"Total Energy = {totalEnergy:.3f}",

@@ -12,9 +12,7 @@ from .tools import computeTotalProbability
 from .tools import computeTotalEnergy
 
 
-def animateEvolution(
-    x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furtherInfo={}
-):
+def animateEvolution(x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furtherInfo):
     from .configs import dt
     from .configs import N_t
     from .configs import skippingFactor
@@ -52,7 +50,7 @@ def animateEvolution(
     fig.suptitle("$\\Psi(x,t)$ and $\\tilde{\\Psi}(k,t)$", fontsize=16)
     infoText_tl = fig.text(
         0.01,
-        0.90,
+        0.925,
         f"$\\kappa = {kappa:.2e}$\n"
         f"Total Probabilty = {totalProb_psi_x:.3f}\n"
         f"Total Energy = {totalEnergy:.3f}",
