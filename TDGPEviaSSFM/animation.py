@@ -4,7 +4,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
-import pycav.display as display
+import IPython.core.display as IPython_display
+import pycav.display as pycav_display
 
 from .tools import probDensity
 from .tools import computeTotalProbability
@@ -51,7 +52,7 @@ def animateEvolution(
     fig.suptitle("$\\Psi(x,t)$ and $\\tilde{\\Psi}(k,t)$", fontsize=16)
     infoText_tl = fig.text(
         0.01,
-        0.95,
+        0.90,
         f"$\\kappa = {kappa:.2e}$\n"
         f"Total Probabilty = {totalProb_psi_x:.3f}\n"
         f"Total Energy = {totalEnergy:.3f}",
@@ -122,8 +123,10 @@ def animateEvolution(
         frames=int((N_t * partFactor) // skippingFactor),
         repeat=False,
     )
-    displayable_animation = display.create_animation(
+    displayable_animation = pycav_display.create_animation(
         animation, fname=eval(f'f"{savePath}"'),
     )
 
-    return displayable_animation
+    IPython_display.display(
+        pycav_display.display_animation(displayable_animation)
+    ) if displayable_animation is not None else None
