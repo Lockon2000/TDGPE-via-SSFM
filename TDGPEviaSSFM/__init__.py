@@ -28,10 +28,29 @@ def configure(**options):
             configs.__dict__[option] = value
 
 
-def solveSE(x, psi_x_0, V_func, kappa, m, furtherInfo, staticPlots=True):
+def solveSE(x, psi_x_0, V_func, kappa, m, furtherInfo, staticPlots=True, dry=False):
+    if dry:
+        dx = x[1] - x[0]
+
+        plotting.plotState(
+            x,
+            tools.getkVector(x.size, dx),
+            psi_x_0,
+            tools.fft(psi_x_0),
+            V_func(x, 0),
+            kappa,
+            m,
+            f"Initial $\\Psi(x,t)$ and $\\tilde{{\\Psi}}(k,t)$",
+            furtherInfo,
+        )
+
+        return
+    
+    from .configs import N_t
+
     k, psi_x_frames, psi_k_frames, V_frames = tdgpe.ssfm(x, psi_x_0, V_func, kappa, m)
 
-    N = x.size
+    N = N_t-1
     if staticPlots:
         if type(staticPlots) == list:
             for factor in staticPlots:
@@ -67,3 +86,5 @@ def solveSE(x, psi_x_0, V_func, kappa, m, furtherInfo, staticPlots=True):
     animation.animateEvolution(
         x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furtherInfo
     )
+
+    return
