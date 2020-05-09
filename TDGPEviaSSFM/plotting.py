@@ -9,11 +9,10 @@ from .tools import computeTotalProbability
 from .tools import computeTotalEnergy
 
 
-plt.rcParams['figure.dpi'] = 80
-plt.rcParams['figure.figsize'] = [15,10]
+def plotState(x, k, psi_x, psi_k, V, kappa, m, furtherInfo={}):
+    from .configs import dt
+    from .configs import N_t
 
-
-def plotState(x, k, dt, N_t, psi_x, psi_k, V, m, kappa, furtherInfo={}):
     # Parameter Calculations #
 
     dx = x[1] - x[0]
@@ -30,9 +29,9 @@ def plotState(x, k, dt, N_t, psi_x, psi_k, V, m, kappa, furtherInfo={}):
 
     probDens_psi_k = probDensity(psi_k)
     totalProb_psi_x = computeTotalProbability(x, psi_x)
-    totalEnergy = computeTotalEnergy(x, psi_x, V, m, kappa)
+    totalEnergy = computeTotalEnergy(x, psi_x, V, kappa, m)
 
-    # Plot Configuration #
+    # Plot Creation and Configuration #
 
     fig, ax = plt.subplots(2)
 
@@ -65,18 +64,17 @@ def plotState(x, k, dt, N_t, psi_x, psi_k, V, m, kappa, furtherInfo={}):
     x_min, x_max = 1.1 * x.min(), 1.1 * x.max()
     psi_x_min, psi_x_max = -(2 * np.absolute(psi_x).max()), 2 * np.absolute(psi_x).max()
     ax[0].axis([x_min, x_max, psi_x_min, psi_x_max])
-    ax[0].plot(x, psi_x.imag, label=r"$im(\Psi(x,t))$")[0]
-    ax[0].plot(x, psi_x.real, label=r"$re(\Psi(x,t))$")[0]
-    ax[0].plot(x, np.absolute(psi_x), label=r"$|\Psi(x,t)|$")[0]
+    ax[0].plot(x, psi_x.imag, label="$im(\\Psi(x,t))$")[0]
+    ax[0].plot(x, psi_x.real, label="$re(\\Psi(x,t))$")[0]
+    ax[0].plot(x, np.absolute(psi_x), label="$|\\Psi(x,t)|$")[0]
     ax[0].plot(x, V, label="$V(x,t)$")[0]
     ax[0].legend(loc="best")
 
-    ax[1].set(title="Momentum Space", xlabel="$k$", ylabel="$|\\tilde{\\Psi}(k,t)|^2$")
+    ax[1].set(title="k Space", xlabel="$k$", ylabel="$|\\tilde{\\Psi}(k,t)|^2$")
     k_min, k_max = 1.1 * k.min(), 1.1 * k.max()
     prob_dens_k_min, prob_dens_k_max = 0, 1.25 * probDens_psi_k.max()
     ax[1].axis([k_min, k_max, prob_dens_k_min, prob_dens_k_max])
-    ax[1].plot(k, probDens_psi_k, label="$|\\tilde{\\Psi}(x,t)|^2$")[0]
+    ax[1].plot(k, probDens_psi_k, label="$|\\tilde{\\Psi}(k,t)|^2$")[0]
     ax[1].legend(loc="best")
 
     plt.show()
-
