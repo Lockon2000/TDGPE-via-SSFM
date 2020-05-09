@@ -45,9 +45,15 @@ def plotState(x, k, psi_x, psi_k, V, kappa, m, title=None, furtherInfo={}):
     fig.text(
         0.01,
         0.925,
-        f"$\\kappa = {kappa:.2e}$\n"
         f"Total Probabilty = {totalProb_psi_x:.3f}\n"
         f"Total Energy = {totalEnergy:.3f}",
+        fontsize="large",
+    )
+    fig.text(
+        0.9,
+        0.925,
+        f"$m = {m}$\n"
+        f"$\\kappa = {kappa:.2e}$",
         fontsize="large",
     )
     fig.text(

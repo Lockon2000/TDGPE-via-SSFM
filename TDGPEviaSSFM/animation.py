@@ -48,15 +48,21 @@ def animateEvolution(x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furth
     # Injection of Plot Information #
 
     fig.suptitle("$\\Psi(x,t)$ and $\\tilde{\\Psi}(k,t)$", fontsize=16)
-    infoText_tl = fig.text(
+    infoText_tl =     fig.text(
         0.01,
         0.925,
-        f"$\\kappa = {kappa:.2e}$\n"
         f"Total Probabilty = {totalProb_psi_x:.3f}\n"
         f"Total Energy = {totalEnergy:.3f}",
         fontsize="large",
     )
-    infoText_bl = fig.text(
+    fig.text(
+        0.9,
+        0.925,
+        f"$m = {m}$\n"
+        f"$\\kappa = {kappa:.2e}$",
+        fontsize="large",
+    )
+    fig.text(
         0.01,
         0.015,
         f"$dx = {dx:.3f}, x_{{boundary}} = {xBoundary:.3f}, x_{{range}} = {xRange:.3f}, x_{{size}} = {xSize}$\n"
@@ -64,7 +70,7 @@ def animateEvolution(x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furth
         f"$dt = {dt:.3f}, t_{{range}} = {tRange:.3f}, N_t = {N_t}$",
         fontsize="large",
     )
-    infoText_br = fig.text(
+    fig.text(
         0.4, 0.015, " | ".join(f"{key}: {value}" for key, value in furtherInfo.items())
     )
 
@@ -102,7 +108,6 @@ def animateEvolution(x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furth
             m,
         )
         infoText_tl.set_text(
-            f"$\\kappa = {kappa:.2e}$\n"
             f"Total Probabilty = {totalProb_psi_x:.3f}\n"
             f"Total Energy = {totalEnergy:.3f}",
         )
