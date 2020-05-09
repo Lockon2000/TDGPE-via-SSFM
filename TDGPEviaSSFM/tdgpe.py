@@ -17,7 +17,21 @@ def ssfm(x, psi_x_0, V_func, kappa, m):
     def _N_op_func(psi_x, x, t):
         return -(V_func(x, t) + kappa * probDensity(psi_x))
 
+    boundaryLength = 10
+
+    def _trim_boundaries(*dataSets):
+        for dataSet in dataSets:
+            dataSet[0:boundaryLength] = 0
+            dataSet[-boundaryLength:] = 0
+
+        return
+
     dx = x[1] - x[0]
+    x = np.arange(x[0] - boundaryLength * dx, x[-1] + (boundaryLength + 1) * dx, dx)
+    psi_x_0 = np.concatenate(
+        [np.zeros(boundaryLength), psi_x_0, np.zeros(boundaryLength)]
+    )
+
     # Get the k vector arranged as normally returned by scipy
     k = (2 * np.pi) * scipy.fft.fftfreq(x.size, dx)
     psi_x_frames = np.empty((N_t, x.size), dtype=np.complex128)
@@ -47,6 +61,12 @@ def ssfm(x, psi_x_0, V_func, kappa, m):
         # Fill the V_frames array
         V_frames[i + 1] = V_func(x, (i + 1) * dt)
 
+        _trim_boundaries(psi_x_frames, psi_k_frames, V_frames)
+
+    x = x[boundaryLength:-boundaryLength]
+    psi_x_frames = psi_x_frames[:, boundaryLength:-boundaryLength]
+    psi_k_frames = psi_k_frames[:, boundaryLength:-boundaryLength]
+    V_frames = V_frames[:, boundaryLength:-boundaryLength]
     # Get the k vector arranged with the zero point in the middle
     k = getkVector(x.size, dx)
 
