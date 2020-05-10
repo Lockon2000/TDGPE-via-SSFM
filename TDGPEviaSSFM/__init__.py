@@ -4,7 +4,7 @@ TDGPEviaSSFM
 A python package to solve the time-dependent Gross–Pitaevskii equation numerically using the Split-Step Fourier method.
 """
 
-__version__ = "0.3.0"
+__version__ = "0.5.0"
 
 
 from . import configs
@@ -40,7 +40,7 @@ def solveSE(x, psi_x_0, V_func, kappa, m, furtherInfo, staticPlots=True, dry=Fal
             V_func(x, 0),
             kappa,
             m,
-            f"Initial $\\Psi(x,t)$ and $\\tilde{{\\Psi}}(k,t)$",
+            f"Initial Plot of $\\Psi(x,t)$ and $\\tilde{{\\Psi}}(k,t)$",
             furtherInfo,
         )
 

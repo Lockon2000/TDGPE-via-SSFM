@@ -10,6 +10,7 @@ import pycav.display as pycav_display
 from .tools import probDensity
 from .tools import computeTotalProbability
 from .tools import computeTotalEnergy
+from .units import *
 
 
 def animateEvolution(x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furtherInfo):
@@ -51,27 +52,33 @@ def animateEvolution(x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furth
     infoText_tl =     fig.text(
         0.01,
         0.925,
-        f"Total Probabilty = {totalProb_psi_x:.3f}\n"
-        f"Total Energy = {totalEnergy:.3f}",
+        f"Elapsed Time = 0 ${unit_t['symbol']}$\n"
+        f"Total Probabilty = {totalProb_psi_x:>7.2%}\n"
+        f"Total Energy = {totalEnergy*unit_E['conversionFactor']:.4G} ${unit_E['symbol']}$",
         fontsize="large",
     )
     fig.text(
         0.9,
         0.925,
-        f"$m = {m}$\n"
-        f"$\\kappa = {kappa:.2e}$",
+        f"$m$ = {m*unit_m['conversionFactor']:.4G} ${unit_m['symbol']}$\n"
+        f"$\\kappa$ = {kappa:.4G}",
         fontsize="large",
     )
     fig.text(
         0.01,
         0.015,
-        f"$dx = {dx:.3f}, x_{{boundary}} = {xBoundary:.3f}, x_{{range}} = {xRange:.3f}, x_{{size}} = {xSize}$\n"
-        f"$dk = {dk:.3f}, k_{{boundary}} = {kBoundary:.3f}, k_{{range}} = {kRange:.3f}, k_{{size}} = {kSize}$\n"
-        f"$dt = {dt:.3f}, t_{{range}} = {tRange:.3f}, N_t = {N_t}$",
+        f"$unit_{{x}}$ = {unit_l['conversionFactor']:.5G} ${unit_l['symbol']}$, $dx$ = {dx:.5G}, "
+        f"$x_{{size}}$ = {xSize}, $x_{{boundary}}$ = {xBoundary:.5G}, "
+        f"$x_{{range}}$ = {xRange:.5G} = {xRange*unit_l['conversionFactor']:.5G} ${unit_l['symbol']}$\n"
+        f"$unit_{{k}}$ = {unit_k['conversionFactor']:.5G} ${unit_k['symbol']}$, $dk$ = {dk:.5G}, "
+        f"$k_{{size}}$ = {kSize}, $k_{{boundary}}$ = {kBoundary:.5G}, "
+        f"$k_{{range}}$ = {kRange:.5G} = {kRange*unit_k['conversionFactor']:.5G} ${unit_k['symbol']}$\n"
+        f"$unit_{{t}}$ = {unit_t['conversionFactor']:.5G} ${unit_t['symbol']}$, $dt$ = {dt:.5G}, $N_t$ = {N_t}, "
+        f"$t_{{range}}$ = {tRange:.5G} = {tRange*unit_t['conversionFactor']:.5G} ${unit_t['symbol']}$",
         fontsize="large",
     )
     fig.text(
-        0.4, 0.015, " | ".join(f"{key}: {value}" for key, value in furtherInfo.items())
+        0.6, 0.015, " | ".join(f"{key}: {value}" for key, value in furtherInfo.items())
     )
 
     # Data Plotting #
@@ -108,8 +115,9 @@ def animateEvolution(x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furth
             m,
         )
         infoText_tl.set_text(
-            f"Total Probabilty = {totalProb_psi_x:.3f}\n"
-            f"Total Energy = {totalEnergy:.3f}",
+            f"Elapsed Time = {dt*n_t*skippingFactor*unit_t['conversionFactor']:.4G} ${unit_t['symbol']}$\n"
+            f"Total Probabilty = {totalProb_psi_x:>7.2%}\n"
+            f"Total Energy = {totalEnergy*unit_E['conversionFactor']:.4G} ${unit_E['symbol']}$",
         )
 
         line0_0.set_data(x, psi_x_frames[skippingFactor * n_t].imag)
