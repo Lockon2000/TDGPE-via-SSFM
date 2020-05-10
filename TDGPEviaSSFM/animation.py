@@ -24,9 +24,12 @@ def animateEvolution(x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furth
     # Parameter Calculations #
 
     dx = x[1] - x[0]
-    xBoundary = x[-1]
-    xRange = x[-1] - x[0]
-    xSize = x.size
+    sx = x / dx
+    unit_sl = {'conversionFactor': unit_l['conversionFactor']*dx, 'symbol': unit_l['symbol']}
+    dsx = 1              # Trivial, as we scale down or up to make this always the case
+    sxBoundary = sx[-1]
+    sxRange = sx[-1] - sx[0]
+    sxSize = sx.size
 
     dk = k[1] - k[0]
     kBoundary = k[-1]
@@ -58,7 +61,7 @@ def animateEvolution(x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furth
         fontsize="large",
     )
     fig.text(
-        0.9,
+        0.85,
         0.925,
         f"$m$ = {m*unit_m['conversionFactor']:.4G} ${unit_m['symbol']}$\n"
         f"$\\kappa$ = {kappa:.4G}",
@@ -67,9 +70,9 @@ def animateEvolution(x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furth
     fig.text(
         0.01,
         0.015,
-        f"$unit_{{x}}$ = {unit_l['conversionFactor']:.5G} ${unit_l['symbol']}$, $dx$ = {dx:.5G}, "
-        f"$x_{{size}}$ = {xSize}, $x_{{boundary}}$ = {xBoundary:.5G}, "
-        f"$x_{{range}}$ = {xRange:.5G} = {xRange*unit_l['conversionFactor']:.5G} ${unit_l['symbol']}$\n"
+        f"$unit_{{x}}$ = {unit_sl['conversionFactor']:.5G} ${unit_sl['symbol']}$, $dx$ = {dsx:.5G}, "
+        f"$x_{{size}}$ = {sxSize}, $x_{{boundary}}$ = {sxBoundary:.5G}, "
+        f"$x_{{range}}$ = {sxRange:.5G} = {sxRange*unit_sl['conversionFactor']:.5G} ${unit_sl['symbol']}$\n"
         f"$unit_{{k}}$ = {unit_k['conversionFactor']:.5G} ${unit_k['symbol']}$, $dk$ = {dk:.5G}, "
         f"$k_{{size}}$ = {kSize}, $k_{{boundary}}$ = {kBoundary:.5G}, "
         f"$k_{{range}}$ = {kRange:.5G} = {kRange*unit_k['conversionFactor']:.5G} ${unit_k['symbol']}$\n"
@@ -84,16 +87,16 @@ def animateEvolution(x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furth
     # Data Plotting #
 
     ax[0].set(title="Position Space", xlabel="$x$", ylabel="$\\Psi(x,t)$ and $V(x,t)$")
-    x_min, x_max = 1.1 * x.min(), 1.1 * x.max()
+    sx_min, sx_max = 1.1 * sx.min(), 1.1 * sx.max()
     psi_x_min, psi_x_max = (
         -(2 * np.absolute(psi_x_frames).max()),
         2 * np.absolute(psi_x_frames).max(),
     )
-    ax[0].axis([x_min, x_max, psi_x_min, psi_x_max])
-    line0_0 = ax[0].plot(x, psi_x_frames[0].imag, label="$im(\\Psi_x(x,t))$")[0]
-    line0_1 = ax[0].plot(x, psi_x_frames[0].real, label="$re(\\Psi_x(x,t))$")[0]
-    line0_2 = ax[0].plot(x, np.absolute(psi_x_frames[0]), label="$|\\Psi_x(x,t)|$")[0]
-    line0_3 = ax[0].plot(x, V_frames[0], label="$V(x,t)$")[0]
+    ax[0].axis([sx_min, sx_max, psi_x_min, psi_x_max])
+    line0_0 = ax[0].plot(sx, psi_x_frames[0].imag, label="$im(\\Psi_x(x,t))$")[0]
+    line0_1 = ax[0].plot(sx, psi_x_frames[0].real, label="$re(\\Psi_x(x,t))$")[0]
+    line0_2 = ax[0].plot(sx, np.absolute(psi_x_frames[0]), label="$|\\Psi_x(x,t)|$")[0]
+    line0_3 = ax[0].plot(sx, V_frames[0], label="$V(x,t)$")[0]
     ax[0].legend(loc="best")
 
     ax[1].set(title="k Space", xlabel="$k$", ylabel="$|\\tilde{\\Psi}(k,t)|^2$")
@@ -120,10 +123,10 @@ def animateEvolution(x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furth
             f"Total Energy = {totalEnergy*unit_E['conversionFactor']:.4G} ${unit_E['symbol']}$",
         )
 
-        line0_0.set_data(x, psi_x_frames[skippingFactor * n_t].imag)
-        line0_1.set_data(x, psi_x_frames[skippingFactor * n_t].real)
-        line0_2.set_data(x, np.absolute(psi_x_frames[skippingFactor * n_t]))
-        line0_3.set_data(x, V_frames[skippingFactor * n_t])
+        line0_0.set_data(sx, psi_x_frames[skippingFactor * n_t].imag)
+        line0_1.set_data(sx, psi_x_frames[skippingFactor * n_t].real)
+        line0_2.set_data(sx, np.absolute(psi_x_frames[skippingFactor * n_t]))
+        line0_3.set_data(sx, V_frames[skippingFactor * n_t])
 
         line1_0.set_data(k, np.absolute(psi_k_frames[skippingFactor * n_t]) ** 2)
 

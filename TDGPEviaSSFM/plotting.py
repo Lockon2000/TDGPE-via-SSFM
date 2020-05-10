@@ -17,9 +17,12 @@ def plotState(x, k, psi_x, psi_k, V, kappa, m, title=None, furtherInfo={}):
     # Parameter Calculations #
 
     dx = x[1] - x[0]
-    xBoundary = x[-1]
-    xRange = x[-1] - x[0]
-    xSize = x.size
+    sx = x / dx
+    unit_sl = {'conversionFactor': unit_l['conversionFactor']*dx, 'symbol': unit_l['symbol']}
+    dsx = 1              # Trivial, as we scale down or up to make this always the case
+    sxBoundary = sx[-1]
+    sxRange = sx[-1] - sx[0]
+    sxSize = sx.size
 
     dk = k[1] - k[0]
     kBoundary = k[-1]
@@ -51,7 +54,7 @@ def plotState(x, k, psi_x, psi_k, V, kappa, m, title=None, furtherInfo={}):
         fontsize="large",
     )
     fig.text(
-        0.9,
+        0.85,
         0.925,
         f"$m$ = {m*unit_m['conversionFactor']:.4G} ${unit_m['symbol']}$\n"
         f"$\\kappa$ = {kappa:.4G}",
@@ -60,9 +63,9 @@ def plotState(x, k, psi_x, psi_k, V, kappa, m, title=None, furtherInfo={}):
     fig.text(
         0.01,
         0.015,
-        f"$unit_{{x}}$ = {unit_l['conversionFactor']:.5G} ${unit_l['symbol']}$, $dx$ = {dx:.5G}, "
-        f"$x_{{size}}$ = {xSize}, $x_{{boundary}}$ = {xBoundary:.5G}, "
-        f"$x_{{range}}$ = {xRange:.5G} = {xRange*unit_l['conversionFactor']:.5G} ${unit_l['symbol']}$\n"
+        f"$unit_{{x}}$ = {unit_sl['conversionFactor']:.5G} ${unit_sl['symbol']}$, $dx$ = {dsx:.5G}, "
+        f"$x_{{size}}$ = {sxSize}, $x_{{boundary}}$ = {sxBoundary:.5G}, "
+        f"$x_{{range}}$ = {sxRange:.5G} = {sxRange*unit_sl['conversionFactor']:.5G} ${unit_sl['symbol']}$\n"
         f"$unit_{{k}}$ = {unit_k['conversionFactor']:.5G} ${unit_k['symbol']}$, $dk$ = {dk:.5G}, "
         f"$k_{{size}}$ = {kSize}, $k_{{boundary}}$ = {kBoundary:.5G}, "
         f"$k_{{range}}$ = {kRange:.5G} = {kRange*unit_k['conversionFactor']:.5G} ${unit_k['symbol']}$\n"
@@ -77,13 +80,13 @@ def plotState(x, k, psi_x, psi_k, V, kappa, m, title=None, furtherInfo={}):
     # Data Plotting #
 
     ax[0].set(title="Position Space", xlabel="$x$", ylabel="$\\Psi(x,t)$ and $V(x,t)$")
-    x_min, x_max = 1.1 * x.min(), 1.1 * x.max()
+    sx_min, sx_max = 1.1 * sx.min(), 1.1 * sx.max()
     psi_x_min, psi_x_max = -(2 * np.absolute(psi_x).max()), 2 * np.absolute(psi_x).max()
-    ax[0].axis([x_min, x_max, psi_x_min, psi_x_max])
-    ax[0].plot(x, psi_x.imag, label="$im(\\Psi(x,t))$")[0]
-    ax[0].plot(x, psi_x.real, label="$re(\\Psi(x,t))$")[0]
-    ax[0].plot(x, np.absolute(psi_x), label="$|\\Psi(x,t)|$")[0]
-    ax[0].plot(x, V, label="$V(x,t)$")[0]
+    ax[0].axis([sx_min, sx_max, psi_x_min, psi_x_max])
+    ax[0].plot(sx, psi_x.imag, label="$im(\\Psi(x,t))$")[0]
+    ax[0].plot(sx, psi_x.real, label="$re(\\Psi(x,t))$")[0]
+    ax[0].plot(sx, np.absolute(psi_x), label="$|\\Psi(x,t)|$")[0]
+    ax[0].plot(sx, V, label="$V(x,t)$")[0]
     ax[0].legend(loc="best")
 
     ax[1].set(title="k Space", xlabel="$k$", ylabel="$|\\tilde{\\Psi}(k,t)|^2$")
