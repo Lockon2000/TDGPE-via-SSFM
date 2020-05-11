@@ -7,7 +7,6 @@ dt = 0.01
 N_t = 24_000
 
 skippingFactor = 16
-secsToMsecsConversionFactor = 0.125*1000
+secsToMsecsConversionFactor = 0.125 * 1000
 partFactor = 1
 savePath = "/vagrant/animations/{furtherInfo['name']}.mp4"
-

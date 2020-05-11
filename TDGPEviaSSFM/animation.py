@@ -25,8 +25,11 @@ def animateEvolution(x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furth
 
     dx = x[1] - x[0]
     sx = x / dx
-    unit_sl = {'conversionFactor': unit_l['conversionFactor']*dx, 'symbol': unit_l['symbol']}
-    dsx = 1              # Trivial, as we scale down or up to make this always the case
+    unit_sl = {
+        "conversionFactor": unit_l["conversionFactor"] * dx,
+        "symbol": unit_l["symbol"],
+    }
+    dsx = 1  # Trivial, as we scale down or up to make this always the case
     sxBoundary = sx[-1]
     sxRange = sx[-1] - sx[0]
     sxSize = sx.size
@@ -48,11 +51,12 @@ def animateEvolution(x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furth
     # Plot Creation and Configuration #
 
     fig, ax = plt.subplots(2)
+    ax_0_1 = ax[0].twinx()
 
     # Injection of Plot Information #
 
     fig.suptitle("$\\Psi(x,t)$ and $\\tilde{\\Psi}(k,t)$", fontsize=16)
-    infoText_tl =     fig.text(
+    infoText_tl = fig.text(
         0.01,
         0.925,
         f"Elapsed Time = 0 ${unit_t['symbol']}$\n"
@@ -81,27 +85,43 @@ def animateEvolution(x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furth
         fontsize="large",
     )
     fig.text(
-        0.6, 0.015, " | ".join(f"{key}: {value}" for key, value in furtherInfo.items())
+        0.45,
+        0.015,
+        " | ".join(
+            f"{key}: {value}" if type(value) == str else f"{key}: {value:.5G}"
+            for key, value in furtherInfo.items()
+        ),
     )
 
     # Data Plotting #
 
-    ax[0].set(title="Position Space", xlabel="$x$", ylabel="$\\Psi(x,t)$ and $V(x,t)$")
     sx_min, sx_max = 1.1 * sx.min(), 1.1 * sx.max()
     psi_x_min, psi_x_max = (
-        -(2 * np.absolute(psi_x_frames).max()),
+        -2 * np.absolute(psi_x_frames).max(),
         2 * np.absolute(psi_x_frames).max(),
     )
+    ax[0].set(title="Position Space", xlabel="$x$", ylabel="$\\Psi(x,t)$")
     ax[0].axis([sx_min, sx_max, psi_x_min, psi_x_max])
-    line0_0 = ax[0].plot(sx, psi_x_frames[0].imag, label="$im(\\Psi_x(x,t))$")[0]
-    line0_1 = ax[0].plot(sx, psi_x_frames[0].real, label="$re(\\Psi_x(x,t))$")[0]
-    line0_2 = ax[0].plot(sx, np.absolute(psi_x_frames[0]), label="$|\\Psi_x(x,t)|$")[0]
-    line0_3 = ax[0].plot(sx, V_frames[0], label="$V(x,t)$")[0]
-    ax[0].legend(loc="best")
+    line0_0 = ax[0].plot(
+        sx, psi_x_frames[0].imag, label="$im(\\Psi_x(x,t))$", color="blue"
+    )[0]
+    line0_1 = ax[0].plot(
+        sx, psi_x_frames[0].real, label="$re(\\Psi_x(x,t))$", color="orange"
+    )[0]
+    line0_2 = ax[0].plot(
+        sx, np.absolute(psi_x_frames[0]), label="$|\\Psi_x(x,t)|$", color="green"
+    )[0]
+    ax[0].legend(loc="upper left")
 
-    ax[1].set(title="k Space", xlabel="$k$", ylabel="$|\\tilde{\\Psi}(k,t)|^2$")
+    V_min, V_max = -2 * np.absolute(V_frames).max(), 2 * np.absolute(V_frames).max()
+    ax_0_1.set_ylabel("$V(x,t)$")
+    ax_0_1.axis([sx_min, sx_max, V_min, V_max])
+    line0_3 = ax_0_1.plot(sx, V_frames[0], label="$V(x,t)$", color="red")[0]
+    ax_0_1.legend(loc="upper right")
+
     k_min, k_max = 1.1 * k.min(), 1.1 * k.max()
     probDens_k_min, probDens_k_max = 0, 1.25 * probDens_psi_k_frames.max()
+    ax[1].set(title="k Space", xlabel="$k$", ylabel="$|\\tilde{\\Psi}(k,t)|^2$")
     ax[1].axis([k_min, k_max, probDens_k_min, probDens_k_max])
     line1_0 = ax[1].plot(
         k, probDens_psi_k_frames[0], label="$|\\tilde{\\Psi}(k,t)|^2$"

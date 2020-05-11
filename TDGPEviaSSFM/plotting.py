@@ -18,8 +18,11 @@ def plotState(x, k, psi_x, psi_k, V, kappa, m, title=None, furtherInfo={}):
 
     dx = x[1] - x[0]
     sx = x / dx
-    unit_sl = {'conversionFactor': unit_l['conversionFactor']*dx, 'symbol': unit_l['symbol']}
-    dsx = 1              # Trivial, as we scale down or up to make this always the case
+    unit_sl = {
+        "conversionFactor": unit_l["conversionFactor"] * dx,
+        "symbol": unit_l["symbol"],
+    }
+    dsx = 1  # Trivial, as we scale down or up to make this always the case
     sxBoundary = sx[-1]
     sxRange = sx[-1] - sx[0]
     sxSize = sx.size
@@ -38,6 +41,7 @@ def plotState(x, k, psi_x, psi_k, V, kappa, m, title=None, furtherInfo={}):
     # Plot Creation and Configuration #
 
     fig, ax = plt.subplots(2)
+    ax_0_1 = ax[0].twinx()
 
     # Injection of Plot Information #
 
@@ -74,26 +78,36 @@ def plotState(x, k, psi_x, psi_k, V, kappa, m, title=None, furtherInfo={}):
         fontsize="large",
     )
     fig.text(
-        0.6, 0.015, " | ".join(f"{key}: {value}" for key, value in furtherInfo.items())
+        0.45,
+        0.015,
+        " | ".join(
+            f"{key}: {value}" if type(value) == str else f"{key}: {value:.5G}"
+            for key, value in furtherInfo.items()
+        ),
     )
 
     # Data Plotting #
 
-    ax[0].set(title="Position Space", xlabel="$x$", ylabel="$\\Psi(x,t)$ and $V(x,t)$")
     sx_min, sx_max = 1.1 * sx.min(), 1.1 * sx.max()
-    psi_x_min, psi_x_max = -(2 * np.absolute(psi_x).max()), 2 * np.absolute(psi_x).max()
+    psi_x_min, psi_x_max = -2 * np.absolute(psi_x).max(), 2 * np.absolute(psi_x).max()
+    ax[0].set(title="Position Space", xlabel="$x$", ylabel="$\\Psi(x,t)$")
     ax[0].axis([sx_min, sx_max, psi_x_min, psi_x_max])
-    ax[0].plot(sx, psi_x.imag, label="$im(\\Psi(x,t))$")[0]
-    ax[0].plot(sx, psi_x.real, label="$re(\\Psi(x,t))$")[0]
-    ax[0].plot(sx, np.absolute(psi_x), label="$|\\Psi(x,t)|$")[0]
-    ax[0].plot(sx, V, label="$V(x,t)$")[0]
-    ax[0].legend(loc="best")
+    ax[0].plot(sx, psi_x.imag, label="$im(\\Psi(x,t))$", color="blue")
+    ax[0].plot(sx, psi_x.real, label="$re(\\Psi(x,t))$", color="orange")
+    ax[0].plot(sx, np.absolute(psi_x), label="$|\\Psi(x,t)|$", color="green")
+    ax[0].legend(loc="upper left")
 
-    ax[1].set(title="k Space", xlabel="$k$", ylabel="$|\\tilde{\\Psi}(k,t)|^2$")
+    V_min, V_max = -2 * np.absolute(V).max(), 2 * np.absolute(V).max()
+    ax_0_1.set_ylabel("$V(x,t)$")
+    ax_0_1.axis([sx_min, sx_max, V_min, V_max])
+    ax_0_1.plot(sx, V, label="$V(x,t)$", color="red")
+    ax_0_1.legend(loc="upper right")
+
     k_min, k_max = 1.1 * k.min(), 1.1 * k.max()
+    ax[1].set(title="k Space", xlabel="$k$", ylabel="$|\\tilde{\\Psi}(k,t)|^2$")
     prob_dens_k_min, prob_dens_k_max = 0, 1.25 * probDens_psi_k.max()
     ax[1].axis([k_min, k_max, prob_dens_k_min, prob_dens_k_max])
-    ax[1].plot(k, probDens_psi_k, label="$|\\tilde{\\Psi}(k,t)|^2$")[0]
+    ax[1].plot(k, probDens_psi_k, label="$|\\tilde{\\Psi}(k,t)|^2$")
     ax[1].legend(loc="best")
 
     plt.show()

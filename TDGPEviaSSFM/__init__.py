@@ -45,12 +45,12 @@ def solveSE(x, psi_x_0, V_func, kappa, m, furtherInfo, staticPlots=True, dry=Fal
         )
 
         return
-    
+
     from .configs import N_t
 
     k, psi_x_frames, psi_k_frames, V_frames = tdgpe.ssfm(x, psi_x_0, V_func, kappa, m)
 
-    N = N_t-1
+    N = N_t - 1
     if staticPlots:
         if type(staticPlots) == list:
             for factor in staticPlots:
