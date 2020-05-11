@@ -46,7 +46,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=["numpy", "scipy", "matplotlib", "PyCav>=1.0.0b3", "ipython"],
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 3 - Alpha",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
