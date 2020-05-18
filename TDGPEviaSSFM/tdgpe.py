@@ -13,9 +13,18 @@ from .tools import ifft
 def ssfm(x, psi_x_0, V_func, kappa, m):
     from .configs import dt
     from .configs import N_t
+    from .configs import unitSystem
+
+    if unitSystem == "SI":
+        from .constants import FundamentalSI
+        hbar = FundamentalSI.hbar.value
+    elif unitSystem == "natural":
+        from .constants import FundamentalNat
+        hbar = FundamentalNat.hbar.value
+
 
     def _N_op_func(psi_x, x, t):
-        return -(V_func(x, t) + kappa * probDensity(psi_x))
+        return -(V_func(x, t) + kappa * probDensity(psi_x))/hbar
 
     dx = x[1] - x[0]
     # Get the k vector arranged as normally returned by scipy
@@ -34,7 +43,7 @@ def ssfm(x, psi_x_0, V_func, kappa, m):
         )
         # Calculate the full time step with the L-op (Lfs)
         psi_x_Lfs = scipy.fft.ifft(
-            np.exp(-0.5j * dt * k ** 2 / m) * scipy.fft.fft(psi_x_Nhs)
+            np.exp(-0.5j * hbar * dt * k ** 2 / m) * scipy.fft.fft(psi_x_Nhs)
         )
         # Calculate the second half time step with the N-op
         psi_x_frames[i + 1] = (

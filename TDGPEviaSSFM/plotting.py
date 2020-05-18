@@ -2,17 +2,24 @@
 """
 
 import numpy as np
+import scipy.signal
 import matplotlib.pyplot as plt
 
 from .tools import probDensity
 from .tools import computeTotalProbability
 from .tools import computeTotalEnergy
-from .units import *
 
 
 def plotState(x, k, psi_x, psi_k, V, kappa, m, title=None, furtherInfo={}):
     from .configs import dt
     from .configs import N_t
+    from .configs import unitSystem
+    from .configs import smoothingParameter
+
+    if unitSystem == "SI":
+        from .siunits import unit_l, unit_t, unit_m, unit_v, unit_p, unit_k, unit_E
+    elif unitSystem == "natural":
+        from .natunits import unit_l, unit_t, unit_m, unit_v, unit_p, unit_k, unit_E
 
     # Parameter Calculations #
 
@@ -34,14 +41,17 @@ def plotState(x, k, psi_x, psi_k, V, kappa, m, title=None, furtherInfo={}):
 
     tRange = dt * N_t
 
+    smoothPsi_x = scipy.signal.savgol_filter(
+        np.absolute(psi_x), smoothingParameter*2+1, 3)
     probDens_psi_k = probDensity(psi_k)
     totalProb_psi_x = computeTotalProbability(x, psi_x)
     totalEnergy = computeTotalEnergy(x, psi_x, V, kappa, m)
 
     # Plot Creation and Configuration #
 
-    fig, ax = plt.subplots(2)
+    fig, ax = plt.subplots(3)
     ax_0_1 = ax[0].twinx()
+    ax_1_1 = ax[1].twinx()
 
     # Injection of Plot Information #
 
@@ -53,8 +63,8 @@ def plotState(x, k, psi_x, psi_k, V, kappa, m, title=None, furtherInfo={}):
     fig.text(
         0.01,
         0.925,
-        f"Total Probabilty = {totalProb_psi_x:>7.2%}\n"
-        f"Total Energy = {totalEnergy*unit_E['conversionFactor']:.4G} ${unit_E['symbol']}$",
+        f"$\\langle\\Psi|\\Psi\\rangle$ = {totalProb_psi_x:>.4G}\n"
+        f"$E$ = {totalEnergy*unit_E['conversionFactor']:.4G} ${unit_E['symbol']}$",
         fontsize="large",
     )
     fig.text(
@@ -88,26 +98,52 @@ def plotState(x, k, psi_x, psi_k, V, kappa, m, title=None, furtherInfo={}):
 
     # Data Plotting #
 
+    # First Subplot
+
     sx_min, sx_max = 1.1 * sx.min(), 1.1 * sx.max()
-    psi_x_min, psi_x_max = -2 * np.absolute(psi_x).max(), 2 * np.absolute(psi_x).max()
+    psi_x_min, psi_x_max = -2 * \
+        np.absolute(psi_x).max(), 2 * np.absolute(psi_x).max()
+    if psi_x_min == 0 and psi_x_max == 0:
+        psi_x_min, psi_x_max = -1, 1
     ax[0].set(title="Position Space", xlabel="$x$", ylabel="$\\Psi(x,t)$")
     ax[0].axis([sx_min, sx_max, psi_x_min, psi_x_max])
     ax[0].plot(sx, psi_x.imag, label="$im(\\Psi(x,t))$", color="blue")
-    ax[0].plot(sx, psi_x.real, label="$re(\\Psi(x,t))$", color="orange")
+    ax[0].plot(sx, psi_x.real, label="$re(\\Psi(x,t))$", color="goldenrod")
     ax[0].plot(sx, np.absolute(psi_x), label="$|\\Psi(x,t)|$", color="green")
     ax[0].legend(loc="upper left")
 
-    V_min, V_max = -2 * np.absolute(V).max(), 2 * np.absolute(V).max()
+    V_min, V_max = -(1 / 0.95) * np.absolute(V).max(), (1 /
+                                                        0.95) * np.absolute(V).max()
+    if V_min == 0 and V_max == 0:
+        V_min, V_max = -1, 1
     ax_0_1.set_ylabel("$V(x,t)$")
     ax_0_1.axis([sx_min, sx_max, V_min, V_max])
-    ax_0_1.plot(sx, V, label="$V(x,t)$", color="red")
+    ax_0_1.plot(sx, V, label="$V(x,t)$", color="firebrick")
     ax_0_1.legend(loc="upper right")
 
+    # Second Subplot
+
+    ax[1].set(title="Position Space", xlabel="$x$", ylabel="$\\Psi(x,t)$")
+    ax[1].axis([sx_min, sx_max, psi_x_min, psi_x_max])
+    ax[1].plot(sx, smoothPsi_x, label="Smooth $|\\Psi(x,t)|$",
+               color="green")
+    ax[1].legend(loc="upper left")
+
+    ax_1_1.set_ylabel("$V(x,t)$")
+    ax_1_1.axis([sx_min, sx_max, V_min, V_max])
+    ax_1_1.plot(sx, V, label="$V(x,t)$", color="firebrick")
+    ax_1_1.legend(loc="upper right")
+
+    # Thrid Subplot
+
     k_min, k_max = 1.1 * k.min(), 1.1 * k.max()
-    ax[1].set(title="k Space", xlabel="$k$", ylabel="$|\\tilde{\\Psi}(k,t)|^2$")
-    prob_dens_k_min, prob_dens_k_max = 0, 1.25 * probDens_psi_k.max()
-    ax[1].axis([k_min, k_max, prob_dens_k_min, prob_dens_k_max])
-    ax[1].plot(k, probDens_psi_k, label="$|\\tilde{\\Psi}(k,t)|^2$")
-    ax[1].legend(loc="best")
+    ax[2].set(title="k Space", xlabel="$k$",
+              ylabel="$|\\tilde{\\Psi}(k,t)|^2$")
+    probDens_k_min, probDens_k_max = 0, 1.25 * probDens_psi_k.max()
+    if probDens_k_max == 0:
+        probDens_k_max = 1
+    ax[2].axis([k_min, k_max, probDens_k_min, probDens_k_max])
+    ax[2].plot(k, probDens_psi_k, label="$|\\tilde{\\Psi}(k,t)|^2$")
+    ax[2].legend(loc="best")
 
     plt.show()
