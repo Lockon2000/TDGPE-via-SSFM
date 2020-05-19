@@ -21,7 +21,7 @@ def animateEvolution(x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furth
     from .configs import secsToMsecsConversionFactor
     from .configs import savePath
     from .configs import unitSystem
-    from .configs import smoothingParameter
+    from .configs import smoothingParameters
 
     if unitSystem == "SI":
         from .siunits import unit_l, unit_t, unit_m, unit_v, unit_p, unit_k, unit_E
@@ -51,7 +51,7 @@ def animateEvolution(x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furth
     # Initial Data Calculations #
 
     smoothPsi_x_frames = scipy.signal.savgol_filter(
-        np.absolute(psi_x_frames), smoothingParameter*2+1, 3)
+        np.absolute(psi_x_frames), smoothingParameters[0]*2+1, smoothingParameters[1])
     probDens_psi_k_frames = probDensity(psi_k_frames)
     totalProb_psi_x = computeTotalProbability(x, psi_x_frames[0])
     totalEnergy = computeTotalEnergy(x, psi_x_frames[0], V_frames[0], kappa, m)

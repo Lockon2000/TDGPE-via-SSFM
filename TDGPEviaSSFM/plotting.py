@@ -14,7 +14,7 @@ def plotState(x, k, psi_x, psi_k, V, kappa, m, title=None, furtherInfo={}):
     from .configs import dt
     from .configs import N_t
     from .configs import unitSystem
-    from .configs import smoothingParameter
+    from .configs import smoothingParameters
 
     if unitSystem == "SI":
         from .siunits import unit_l, unit_t, unit_m, unit_v, unit_p, unit_k, unit_E
@@ -42,7 +42,7 @@ def plotState(x, k, psi_x, psi_k, V, kappa, m, title=None, furtherInfo={}):
     tRange = dt * N_t
 
     smoothPsi_x = scipy.signal.savgol_filter(
-        np.absolute(psi_x), smoothingParameter*2+1, 3)
+        np.absolute(psi_x), smoothingParameters[0]*2+1, smoothingParameters[1])
     probDens_psi_k = probDensity(psi_k)
     totalProb_psi_x = computeTotalProbability(x, psi_x)
     totalEnergy = computeTotalEnergy(x, psi_x, V, kappa, m)

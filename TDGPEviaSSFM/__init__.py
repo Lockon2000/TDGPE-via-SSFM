@@ -26,7 +26,7 @@ def configure(**options):
             "secsToMsecsConversionFactor",
             "savePath",
             "unitSystem",
-            "smoothingParameter"
+            "smoothingParameters"
         ]:
             configs.__dict__[option] = value
 
