@@ -12,7 +12,7 @@ from . import tools
 from . import tdgpe
 from . import interpolation
 from . import plotting
-from . import animation
+from . import animating
 from . import constants
 
 
@@ -31,7 +31,7 @@ def configure(**options):
             configs.__dict__[option] = value
 
 
-def solveSE(x, psi_x_0, V_func, kappa, m, furtherInfo, staticPlots=True, dry=False):
+def solveSE(x, psi_x_0, V_func, kappa, m, furtherInfo, staticPlots=True, animation=True, dry=False):
     if dry:
         dx = x[1] - x[0]
 
@@ -87,8 +87,9 @@ def solveSE(x, psi_x_0, V_func, kappa, m, furtherInfo, staticPlots=True, dry=Fal
                 "Wrong value for staticPlots! Only bool or list are allowed"
             )
 
-    animation.animateEvolution(
-        x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furtherInfo
-    )
+    if animation:
+        animating.animateEvolution(
+            x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furtherInfo
+        )
 
-    return
+    return k, psi_x_frames, psi_k_frames, V_frames
