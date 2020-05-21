@@ -15,12 +15,12 @@ def ssfm(x, psi_x_0, V_func, kappa, m):
     from .configs import N_t
     from .configs import unitSystem
 
-    if unitSystem == "SI":
-        from .constants import FundamentalSI
-        hbar = FundamentalSI.hbar.value
-    elif unitSystem == "natural":
+    if unitSystem == "natural":
         from .constants import FundamentalNat
         hbar = FundamentalNat.hbar.value
+    elif unitSystem == "SI":
+        from .constants import FundamentalSI
+        hbar = FundamentalSI.hbar.value
 
 
     def _N_op_func(psi_x, x, t):

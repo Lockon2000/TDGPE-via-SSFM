@@ -12,4 +12,4 @@ partFactor = 1
 savePath = "/vagrant/animations/{furtherInfo['name']}.mp4"
 
 unitSystem = "natural"
-smoothingParameter = 25
+smoothingParameters = [15,2]

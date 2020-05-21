@@ -70,7 +70,7 @@ def animateEvolution(x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furth
         0.925,
         f"$t$ = 0 ${unit_t['symbol']}$\n"
         f"$\\langle\\Psi|\\Psi\\rangle$ = {totalProb_psi_x:>.4G}\n"
-        f"$E$ = {totalEnergy*unit_E['conversionFactor']:.4G} ${unit_E['symbol']}$",
+        f"$E$ = {totalEnergy*unit_E['conversionFactor']:.7G} ${unit_E['symbol']}$",
         fontsize="large",
     )
     fig.text(
@@ -178,7 +178,7 @@ def animateEvolution(x, k, psi_x_frames, psi_k_frames, V_frames, kappa, m, furth
         infoText_tl.set_text(
             f"$t$ = {dt*n_t*skippingFactor*unit_t['conversionFactor']:.4G} ${unit_t['symbol']}$\n"
             f"$\\langle\\Psi|\\Psi\\rangle$ = {totalProb_psi_x:>.4G}\n"
-            f"$E$ = {totalEnergy*unit_E['conversionFactor']:.4G} ${unit_E['symbol']}$",
+            f"$E$ = {totalEnergy*unit_E['conversionFactor']:.7G} ${unit_E['symbol']}$",
         )
 
         line0_0.set_data(sx, psi_x_frames[skippingFactor * n_t].imag)

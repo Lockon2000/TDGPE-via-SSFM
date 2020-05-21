@@ -4,8 +4,10 @@ TDGPEviaSSFM
 A python package to solve the time-dependent Gross–Pitaevskii equation numerically using the Split-Step Fourier method.
 """
 
-__version__ = "0.7.0"
+__version__ = "0.9.0"
 
+
+import numpy as np
 
 from . import configs
 from . import tools
@@ -93,3 +95,43 @@ def solveSE(x, psi_x_0, V_func, kappa, m, furtherInfo, staticPlots=True, animati
         )
 
     return k, psi_x_frames, psi_k_frames, V_frames
+
+
+def calculateKineticEnergyCourse(x, dt, psi_x_frames, m):
+    t = np.arange(psi_x_frames.shape[0]) * dt
+
+    K = np.array(list(map(lambda psi_x: tools.computeKineticEnergy(
+        x, psi_x, m), psi_x_frames)))
+
+    return t, K
+
+
+def calculateExternalPotentialEnergyCourse(x, dt, psi_x_frames, V_frames):
+    t = np.arange(psi_x_frames.shape[0]) * dt
+    data = np.concatenate((psi_x_frames, V_frames), axis=1).reshape(
+        (psi_x_frames.shape[0], 2, psi_x_frames.shape[1]))
+
+    V_ext = np.array(list(map(lambda psi_x__and__V: tools.computeExternalPotentialEnergy(
+        x, psi_x__and__V[0], psi_x__and__V[1].real), data)))
+
+    return t, V_ext
+
+
+def calculateInternalPotentialEnergyCourse(x, dt, psi_x_frames, kappa):
+    t = np.arange(psi_x_frames.shape[0]) * dt
+
+    V_int = np.array(list(map(lambda psi_x: tools.computeInternalPotentialEnergy(
+        x, psi_x, kappa), psi_x_frames)))
+
+    return t, V_int
+
+
+def calculateTotalEnergyCourse(x, dt, psi_x_frames, V_frames, kappa, m):
+    t = np.arange(psi_x_frames.shape[0]) * dt
+    data = np.concatenate((psi_x_frames, V_frames), axis=1).reshape(
+        (psi_x_frames.shape[0], 2, psi_x_frames.shape[1]))
+
+    E = np.array(list(map(lambda psi_x__and__V: tools.computeTotalEnergy(
+        x, psi_x__and__V[0], psi_x__and__V[1].real, kappa, m), data)))
+
+    return t, E

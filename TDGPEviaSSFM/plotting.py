@@ -64,7 +64,7 @@ def plotState(x, k, psi_x, psi_k, V, kappa, m, title=None, furtherInfo={}):
         0.01,
         0.925,
         f"$\\langle\\Psi|\\Psi\\rangle$ = {totalProb_psi_x:>.4G}\n"
-        f"$E$ = {totalEnergy*unit_E['conversionFactor']:.4G} ${unit_E['symbol']}$",
+        f"$E$ = {totalEnergy*unit_E['conversionFactor']:.7G} ${unit_E['symbol']}$",
         fontsize="large",
     )
     fig.text(
